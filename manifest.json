@@ -3,8 +3,17 @@
   "name": "Serenade",
   "version": "2.0.3",
   "description": "Code with voice. Learn more at https://serenade.ai.",
-  "permissions": ["background", "tabs", "storage", "alarms", "idle", "scripting"],
-  "host_permissions": ["*://*/*"],
+  "permissions": [
+    "background",
+    "tabs",
+    "storage",
+    "alarms",
+    "idle",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
   "action": {
     "default_title": "Serenade for Chrome",
     "default_popup": "build/popup.html"
@@ -12,17 +21,29 @@
   "background": {
     "service_worker": "build/extension.js"
   },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "content_scripts": [
     {
-      "js": ["build/content-script.js"],
-      "matches": ["*://*/*"],
+      "js": [
+        "build/content-script.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["build/injected.js", "build/injected.css"],
-      "matches": ["*://*/*"]
+      "resources": [
+        "build/injected.js",
+        "build/injected.css"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
     }
   ],
   "icons": {
