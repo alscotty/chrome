@@ -2,6 +2,11 @@
 
 Source for the [Serenade Chrome Extension](https://chrome.google.com/webstore/detail/serenade-for-chrome/bgfbijeikimjmdjldemlegooghdjinmj?hl=en)
 
+##Alscotty hotfix 8/21/2025
+- refactored to make it more compliant with manifest_v3, extension what hitting issues with injecting the content scripts, thus it was not executing commands like clicks/typing, particularly "show links" or "show inputs" were loading overlay but unable to actually click
+- now it is working again! tested on chrome
+- the tests need some updating (as the show fails for content script still, inaccurate) but the playwright stuff is a good start to test for regressions etc. 
+
 ## Installation
 
 1. Download `build.zip` and unzip
