@@ -85,17 +85,34 @@ export default class IPC {
     return result;
   }
 
-  private async sendMessageToContentScript(message: any): Promise<void> {
+  private async sendMessageToContentScript(message: any): Promise<any> {
     let tab = await this.tab();
-    if (!tab?.id || tab.url?.startsWith("chrome://")) {
-      return;
+    if (!tab?.id) {
+      return null;
     }
 
-    return new Promise((resolve) => {
-      chrome.tabs.sendMessage(tab!.id!, message, (response) => {
-        resolve(response);
-      });
-    });
+    if (tab.url?.startsWith("chrome://") || 
+        tab.url?.startsWith("chrome-extension://") || 
+        tab.url?.startsWith("moz-extension://") || 
+        tab.url?.startsWith("edge://") ||
+        tab.url?.startsWith("about:")) {
+      console.warn('Cannot execute scripts on internal browser pages');
+      return null;
+    }
+
+    try {
+      console.log("IPC sending message to content script:", message);
+      const result = await chrome.tabs.sendMessage(tab.id, message);
+      console.log("Content script responded:", result);
+      return result;
+    } catch (error) {
+      if (chrome.runtime.lastError) {
+        console.warn(`Content script message failed: ${chrome.runtime.lastError.message}`);
+      } else {
+        console.warn("Content script message failed:", error);
+      }
+      return null;
+    }
   }
 
   async handle(response: any): Promise<any> {

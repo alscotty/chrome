@@ -9,5 +9,13 @@
     "strict": true,
     "preserveSymlinks": true,
     "esModuleInterop": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "tests/**/*",
+    "playwright.config.ts",
+    "scripts/**/*"
+  ]
 }

@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2020",
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["@playwright/test", "node"]
+  },
+  "include": [
+    "./**/*"
+  ],
+  "exclude": []
+}

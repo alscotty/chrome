@@ -1,5 +1,6 @@
 import ExtensionCommandHandler from "./extension-command-handler";
 import IPC from "./ipc";
+import scriptInjector from "./script-injector";
 
 const ensureConnection = async () => {
   await ipc.ensureConnection();
@@ -9,9 +10,9 @@ const ensureConnection = async () => {
 
 const extensionCommandHandler = new ExtensionCommandHandler();
 const ipc = new IPC(
-  navigator.userAgent.indexOf("Brave") != -1
+  navigator.userAgent.includes("Brave")
     ? "brave"
-    : navigator.userAgent.indexOf("Edg") != -1
+    : navigator.userAgent.includes("Edg")
     ? "edge"
     : "chrome",
   extensionCommandHandler
@@ -42,9 +43,42 @@ chrome.idle.onStateChanged.addListener(async (state) => {
   }
 });
 
-chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type == "reconnect") {
-    await ensureConnection();
+    // Handle async operations properly in MV3 service worker
+    (async () => {
+      await ensureConnection();
+      if (sendResponse) sendResponse({ success: true });
+    })();
+    return true; // Indicate we will send response asynchronously
+  }
+});
+
+chrome.action.onClicked.addListener(async (tab) => {
+  if (!tab) {
+    console.error('No tab provided to action click handler');
+    return;
+  }
+
+  console.log(`Action clicked for tab: ${tab.id} - ${tab.url}`);
+
+  const success = await scriptInjector.injectScript(tab, 'build/injected.js', {
+    preventDuplicates: true,
+    world: 'MAIN',
+    allFrames: false
+  });
+
+  if (!success) {
+    console.error('Failed to inject script via action click');
+    chrome.action.setBadgeText({ text: '!', tabId: tab.id });
+    chrome.action.setBadgeBackgroundColor({ color: '#ff0000', tabId: tab.id });
+  } else {
+    chrome.action.setBadgeText({ text: '✓', tabId: tab.id });
+    chrome.action.setBadgeBackgroundColor({ color: '#00ff00', tabId: tab.id });
+    
+    setTimeout(() => {
+      chrome.action.setBadgeText({ text: '', tabId: tab.id });
+    }, 3000);
   }
 });
 
@@ -56,16 +90,22 @@ keepAlive();
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'keepAlive') {
     lifeline = port;
-    setTimeout(keepAliveForced, 4 * 60 * 1000); // under five minutes
-    port.onDisconnect.addListener(keepAliveForced);
+    createKeepAliveAlarm();
+    port.onDisconnect.addListener(createKeepAliveAlarm);
   }
 });
 
-function keepAliveForced() {
-  lifeline?.disconnect();
-  lifeline = null;
-  keepAlive();
+function createKeepAliveAlarm() {
+  chrome.alarms.create('keepAliveForced', { delayInMinutes: 4 });
 }
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'keepAliveForced') {
+    lifeline?.disconnect();
+    lifeline = null;
+    keepAlive();
+  }
+});
 
 async function keepAlive() {
   if (lifeline) {

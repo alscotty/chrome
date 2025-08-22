@@ -18,11 +18,19 @@
     "build": "webpack --mode development",
     "dist": "webpack --mode production && zip -r build.zip build img manifest.json",
     "watch": "webpack --mode development --watch",
-    "test": "open http://localhost:8001/src/test & python -m http.server 8001"
+    "test": "open http://localhost:8001/src/test & python3 -m http.server 8001",
+    "test:playwright": "npm run build && playwright test",
+    "test:watch": "node scripts/watch-and-test.js",
+    "test:ui": "npm run build && playwright test --ui",
+    "test:debug": "npm run build && playwright test --debug"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
     "@types/chrome": "^0.0.174",
     "@types/uuid": "^8.3.3",
+    "chokidar": "^3.5.3",
+    "concurrently": "^8.2.2",
+    "lodash.debounce": "^4.0.8",
     "copy-webpack-plugin": "^11.0.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
