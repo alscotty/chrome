@@ -96,15 +96,11 @@ export default class IPC {
         tab.url?.startsWith("moz-extension://") || 
         tab.url?.startsWith("edge://") ||
         tab.url?.startsWith("about:")) {
-      console.warn('Cannot execute scripts on internal browser pages');
       return null;
     }
 
     try {
-      console.log("IPC sending message to content script:", message);
-      const result = await chrome.tabs.sendMessage(tab.id, message);
-      console.log("Content script responded:", result);
-      return result;
+      return await chrome.tabs.sendMessage(tab.id, message);
     } catch (error) {
       if (chrome.runtime.lastError) {
         console.warn(`Content script message failed: ${chrome.runtime.lastError.message}`);
