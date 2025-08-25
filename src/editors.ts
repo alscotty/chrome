@@ -341,7 +341,6 @@ class NativeInput extends Editor {
 
   private undoStack(): { source: string; cursor: number }[] {
     const editor = document.activeElement as Element;
-    console.log(editor);
     if (!this.undoStacks.has(editor)) {
       this.undoStacks.set(editor, []); 
     }
