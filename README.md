@@ -12,7 +12,7 @@ Source for the [Serenade Chrome Extension](https://chrome.google.com/webstore/de
 
 ## Installation
 
-1. Download `build.zip` and unzip
+1. Run `npm run build && npm run dist` to generate `build.zip`, then unzip
 2. In Chrome, go to [chrome://extensions](chrome://extensions) and enable Developer Mode
 3. Click "Load unpacked" and select the unzipped `build` folder
 
