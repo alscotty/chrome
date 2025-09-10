@@ -1,8 +1,5 @@
 import * as editors from "./editors";
 
-const G_SUITE_LINKS_SELECTORS = '';
-const G_SUITE_INPUTS_SELECTORS = '';
-
 export default class InjectedCommandHandler {
   private overlays: { node: Node; type: string }[] = [];
   private settings = {
@@ -33,6 +30,18 @@ export default class InjectedCommandHandler {
     });
 
     this.overlays = [];
+  }
+
+  private setOverlayContent(element: HTMLElement, content: string) {
+    // Use Trusted Types for g-suite compatibility and other sites as applicable
+    if ((window as any).trustedTypes) {
+      const policy = (window as any).trustedTypes.createPolicy("serenade-policy", {
+        createHTML: (input: string) => input
+      });
+      element.innerHTML = policy.createHTML(content);
+    } else {
+      element.innerHTML = content;
+    }
   }
 
   private inViewport(element: HTMLElement) {
@@ -243,7 +252,7 @@ export default class InjectedCommandHandler {
 
   private showCopyOverlay(index: number) {
     const overlay = document.createElement("div");
-    overlay.textContent = `Copied ${index}`;
+    this.setOverlayContent(overlay, `Copied ${index}`);
     overlay.id = "serenade-copy-overlay";
     document.body.appendChild(overlay);
     this.createAlarm('remove-overlay', 1);
@@ -263,7 +272,7 @@ export default class InjectedCommandHandler {
       let element = nodes[i] as HTMLElement;
       const elementRect = element.getBoundingClientRect();
       const overlay = document.createElement("div");
-      overlay.textContent = `${i + 1}`;
+      this.setOverlayContent(overlay, `${i + 1}`);
       overlay.id = `serenade-overlay-${i + 1}`;
       overlay.className = "serenade-overlay";
       overlay.style.top = elementRect.top - bodyRect.top + "px";
@@ -418,15 +427,15 @@ export default class InjectedCommandHandler {
   async COMMAND_TYPE_SHOW(data: any): Promise<any> {
     let selector = "";
     if (data.text == "links") {
-      selector = 'a, button, summary, [role="link"], [role="button"]' + ',' + G_SUITE_LINKS_SELECTORS;
+      selector = 'a, button, summary, [role="link"], [role="button"]';
     } else if (data.text == "inputs") {
       selector =
-        'input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]' + ',' + G_SUITE_INPUTS_SELECTORS;
+        'input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]';
     } else if (data.text == "code") {
       selector = "pre, code";
     } else if (data.text == "all") {
       selector =
-        'a, button, summary, [role="link"], [role="button"], input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]' + ',' + G_SUITE_LINKS_SELECTORS + ',' + G_SUITE_INPUTS_SELECTORS;
+        'a, button, summary, [role="link"], [role="button"], input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]';
     } else {
       return;
     }
