@@ -32,6 +32,18 @@ export default class InjectedCommandHandler {
     this.overlays = [];
   }
 
+  private setOverlayContent(element: HTMLElement, content: string) {
+    // Use Trusted Types for g-suite compatibility and other sites as applicable
+    if ((window as any).trustedTypes) {
+      const policy = (window as any).trustedTypes.createPolicy("serenade-policy", {
+        createHTML: (input: string) => input
+      });
+      element.innerHTML = policy.createHTML(content);
+    } else {
+      element.innerHTML = content;
+    }
+  }
+
   private inViewport(element: HTMLElement) {
     const bounding = element.getBoundingClientRect();
 
@@ -240,7 +252,7 @@ export default class InjectedCommandHandler {
 
   private showCopyOverlay(index: number) {
     const overlay = document.createElement("div");
-    overlay.innerHTML = `Copied ${index}`;
+    this.setOverlayContent(overlay, `Copied ${index}`);
     overlay.id = "serenade-copy-overlay";
     document.body.appendChild(overlay);
     this.createAlarm('remove-overlay', 1);
@@ -260,7 +272,7 @@ export default class InjectedCommandHandler {
       let element = nodes[i] as HTMLElement;
       const elementRect = element.getBoundingClientRect();
       const overlay = document.createElement("div");
-      overlay.innerHTML = `${i + 1}`;
+      this.setOverlayContent(overlay, `${i + 1}`);
       overlay.id = `serenade-overlay-${i + 1}`;
       overlay.className = "serenade-overlay";
       overlay.style.top = elementRect.top - bodyRect.top + "px";

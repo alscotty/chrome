@@ -2,8 +2,8 @@
 
 Source for the [Serenade Chrome Extension](https://chrome.google.com/webstore/detail/serenade-for-chrome/bgfbijeikimjmdjldemlegooghdjinmj?hl=en)
 
-## Verified Chrome versions this works with:
-- 9/9/2025: Version 140.0.7339.133 (Official Build) (arm64)
+## Changelog
+- v 2.0.5, merged 9/9/2025, confirmed chrome version Version 140.0.7339.133 (Official Build) (arm64). Adds trusted types compatibility for google suite apps (and other that might use this feature) See [docs](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) 
 
 ## Alscotty hotfix 8/21/2025
 - refactored to make it more compliant with manifest_v3, extension what hitting issues with injecting the content scripts, thus it was not executing commands like clicks/typing, particularly "show links" or "show inputs" were loading overlay but unable to actually click
