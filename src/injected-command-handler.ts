@@ -1,5 +1,8 @@
 import * as editors from "./editors";
 
+const G_SUITE_LINKS_SELECTORS = '';
+const G_SUITE_INPUTS_SELECTORS = '';
+
 export default class InjectedCommandHandler {
   private overlays: { node: Node; type: string }[] = [];
   private settings = {
@@ -240,7 +243,7 @@ export default class InjectedCommandHandler {
 
   private showCopyOverlay(index: number) {
     const overlay = document.createElement("div");
-    overlay.innerHTML = `Copied ${index}`;
+    overlay.textContent = `Copied ${index}`;
     overlay.id = "serenade-copy-overlay";
     document.body.appendChild(overlay);
     this.createAlarm('remove-overlay', 1);
@@ -260,7 +263,7 @@ export default class InjectedCommandHandler {
       let element = nodes[i] as HTMLElement;
       const elementRect = element.getBoundingClientRect();
       const overlay = document.createElement("div");
-      overlay.innerHTML = `${i + 1}`;
+      overlay.textContent = `${i + 1}`;
       overlay.id = `serenade-overlay-${i + 1}`;
       overlay.className = "serenade-overlay";
       overlay.style.top = elementRect.top - bodyRect.top + "px";
@@ -415,15 +418,15 @@ export default class InjectedCommandHandler {
   async COMMAND_TYPE_SHOW(data: any): Promise<any> {
     let selector = "";
     if (data.text == "links") {
-      selector = 'a, button, summary, [role="link"], [role="button"]';
+      selector = 'a, button, summary, [role="link"], [role="button"]' + ',' + G_SUITE_LINKS_SELECTORS;
     } else if (data.text == "inputs") {
       selector =
-        'input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]';
+        'input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]' + ',' + G_SUITE_INPUTS_SELECTORS;
     } else if (data.text == "code") {
       selector = "pre, code";
     } else if (data.text == "all") {
       selector =
-        'a, button, summary, [role="link"], [role="button"], input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]';
+        'a, button, summary, [role="link"], [role="button"], input, textarea, [role="checkbox"], [role="radio"], label, [contenteditable="true"]' + ',' + G_SUITE_LINKS_SELECTORS + ',' + G_SUITE_INPUTS_SELECTORS;
     } else {
       return;
     }
