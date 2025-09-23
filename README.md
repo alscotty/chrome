@@ -1,6 +1,5 @@
-# Serenade Chrome Extension
-
-Source for the [Serenade Chrome Extension](https://chrome.google.com/webstore/detail/serenade-for-chrome/bgfbijeikimjmdjldemlegooghdjinmj?hl=en)
+# WebChime Chrome Extension
+![WebChime logo](./extension_promo_images//webchime.png)
 
 ## Changelog
 - v 2.0.5, merged 9/9/2025, confirmed chrome version Version 140.0.7339.133 (Official Build) (arm64). Adds trusted types compatibility for google suite apps (and other that might use this feature) See [docs](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) 
@@ -29,7 +28,7 @@ Each of these script types can communicate between each other with browser event
 
 - Extension code
   - `extension.ts`: Entry-point for the extension
-  - `ipc.ts`: Handles communication between the Serenade app and the Chrome extension. Also determines which command handler to send each incoming command to.
+  - `ipc.ts`: Handles communication between the Serenade app and WebChime Chrome extension. Also determines which command handler to send each incoming command to.
   - `extension-command-handler.ts`: Handles commands that do not need page content/require access to the browser APIs (e.g. tab management)
 - Content scripts
   - `content-script.ts`: Adds the tag containing the injected scripts and sets up communication between `ipc.ts` and the injected code
@@ -77,3 +76,6 @@ The `Editor` class also contains some helper functions to determine a suitable f
 1. Update the version number in `manifest.json`
 2. Run `npm run dist`
 3. Upload the new `build.zip` file to the Chrome Web Store
+
+## Privacy Policy
+[see link](https://webchime-privacy-fir-6d7s.bolt.host)
