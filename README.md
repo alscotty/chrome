@@ -1,4 +1,5 @@
 # WebChime Chrome Extension
+Available for download on the [chrome web store](https://chromewebstore.google.com/detail/pfcnjhdacgnclpladnjfpepigbbbbkfc?utm_source=item-share-cb)
 ![WebChime logo](./extension_promo_images//webchime.png)
 
 ## Changelog
