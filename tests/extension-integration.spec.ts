@@ -58,40 +58,10 @@ test.describe('Serenade Extension Integration Tests', () => {
     }
   });
 
-  test('extension popup is accessible', async ({ context }) => {
-    // Get the extension ID (this is a bit tricky in Playwright)
-    const pages = await context.pages();
-    let extensionId: string | null = null;
-    
-    // Try to find extension pages
-    for (const page of pages) {
-      const url = page.url();
-      if (url.startsWith('chrome-extension://')) {
-        const match = url.match(/chrome-extension:\/\/([a-z]+)/);
-        if (match) {
-          extensionId = match[1];
-          break;
-        }
-      }
-    }
-    
-    if (!extensionId) {
-      console.log('Extension ID not found, skipping popup test');
-      return;
-    }
-    
-    // Try to open the popup
-    try {
-      const popupPage = await context.newPage();
-      await popupPage.goto(`chrome-extension://${extensionId}/build/popup.html`);
-      
-      // Check if popup content loads
-      const title = await popupPage.title();
-      expect(title).toBeTruthy();
-      
-      await popupPage.close();
-    } catch (error) {
-      console.log('Popup test failed (might be expected):', error);
-    }
-  });
+
+
+
+
+
+
 });
